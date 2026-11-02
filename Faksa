@@ -1,0 +1,113 @@
+-- ============================================
+-- Sahoyogita Database Schema
+-- ============================================
+
+-- ১. Profiles table (auth.users ৰ সৈতে সংযুক্ত)
+create table public.profiles (
+  id uuid references auth.users on delete cascade primary key,
+  username text unique not null,
+  full_name text,
+  avatar_url text,
+  created_at timestamptz default now()
+);
+
+-- ২. Posts table
+create table public.posts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  content text,
+  media_url text,
+  media_type text check (media_type in ('image', 'video', 'audio', 'none')) default 'none',
+  created_at timestamptz default now()
+);
+
+-- ৩. Comments table
+create table public.comments (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid references public.posts(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  content text not null,
+  created_at timestamptz default now()
+);
+
+-- ৪. Likes table
+create table public.likes (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid references public.posts(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  created_at timestamptz default now(),
+  unique(post_id, user_id)
+);
+
+-- ============================================
+-- Row Level Security (RLS) - সুৰক্ষা
+-- ============================================
+
+alter table public.profiles enable row level security;
+alter table public.posts enable row level security;
+alter table public.comments enable row level security;
+alter table public.likes enable row level security;
+
+-- Profiles: সকলোৱে পঢ়িব পাৰে, নিজৰটো এডিট কৰিব পাৰে
+create policy "Profiles are viewable by everyone"
+  on public.profiles for select using (true);
+
+create policy "Users can insert own profile"
+  on public.profiles for insert with check (auth.uid() = id);
+
+create policy "Users can update own profile"
+  on public.profiles for update using (auth.uid() = id);
+
+-- Posts: সকলোৱে পঢ়িব পাৰে, লগইন কৰাজনে বনাব পাৰে, নিজৰটো ডিলিট কৰিব পাৰে
+create policy "Posts are viewable by everyone"
+  on public.posts for select using (true);
+
+create policy "Authenticated users can create posts"
+  on public.posts for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete own posts"
+  on public.posts for delete using (auth.uid() = user_id);
+
+-- Comments: সকলোৱে পঢ়িব পাৰে, লগইন কৰাজনে বনাব পাৰে
+create policy "Comments are viewable by everyone"
+  on public.comments for select using (true);
+
+create policy "Authenticated users can create comments"
+  on public.comments for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete own comments"
+  on public.comments for delete using (auth.uid() = user_id);
+
+-- Likes: সকলোৱে পঢ়িব পাৰে, লগইন কৰাজনে টগল কৰিব পাৰে
+create policy "Likes are viewable by everyone"
+  on public.likes for select using (true);
+
+create policy "Authenticated users can like"
+  on public.likes for insert with check (auth.uid() = user_id);
+
+create policy "Users can unlike"
+  on public.likes for delete using (auth.uid() = user_id);
+
+-- ============================================
+-- Auth ট্ৰিগাৰ: ছাইন আপ কৰিলে profile অট' বনাব
+-- ============================================
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, username, full_name)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8)),
+    coalesce(new.raw_user_meta_data->>'full_name', 'New User')
+  );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
