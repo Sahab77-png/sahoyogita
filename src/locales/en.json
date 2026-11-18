@@ -1,0 +1,10 @@
+{
+    "welcome": "Welcome",
+    "login": "Login",
+    "signup": "Sign Up",
+    "email_placeholder": "Email",
+    "password_placeholder": "Password",
+    "post_button": "Post",
+    "logout": "Logout",
+    "comment_placeholder": "Write a comment..."
+}
