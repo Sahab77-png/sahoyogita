@@ -1,10 +1,23 @@
 {
-  "welcome": "স্বাগতম",
   "login": "লগইন",
   "signup": "ছাইন আপ",
-  "email_placeholder": "ইমেইল",
-  "password_placeholder": "পাছৱৰ্ড",
-  "post_button": "পোষ্ট কৰক",
+  "username": "ইউজাৰনেম",
+  "fullName": "সম্পূৰ্ণ নাম",
+  "email": "ইমেইল",
+  "password": "পাছৱৰ্ড",
+  "wait": "অপেক্ষা কৰক...",
+  "createAccount": "নতুন একাউণ্ট বনাওক",
+  "loginNow": "এতিয়া লগইন কৰক",
   "logout": "লগআউট",
-  "comment_placeholder": "কমেন্ট লিখক..."
+  "post_placeholder": "আপোনাৰ মনৰ কথা লিখক...",
+  "choose_file": "ফাইল বাছনি কৰক",
+  "post_button": "পোষ্ট কৰক",
+  "uploading": "আপলোড হৈ আছে...",
+  "no_posts": "এতিয়ালৈকে কোনো পোষ্ট নাই। প্ৰথমটো পোষ্ট আপুনিয়েই কৰক!",
+  "like": "লাইক",
+  "comment": "কমেন্ট",
+  "share": "শ্বেয়াৰ",
+  "comment_placeholder": "কমেন্ট লিখক...",
+  "send": "পঠিয়াওক",
+  "loading": "লোড হৈ আছে..."
 }
