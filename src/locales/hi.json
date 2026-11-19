@@ -1,10 +1,23 @@
 {
-  "welcome": "स्वागत है",
   "login": "लॉगिन",
   "signup": "साइन अप",
-  "email_placeholder": "ईमेल",
-  "password_placeholder": "पासवर्ड",
-  "post_button": "पोस्ट करें",
+  "username": "उपयोगकर्ता नाम",
+  "fullName": "पूरा नाम",
+  "email": "ईमेल",
+  "password": "पासवर्ड",
+  "wait": "कृपया प्रतीक्षा करें...",
+  "createAccount": "नया खाता बनाएं",
+  "loginNow": "अब लॉगिन करें",
   "logout": "लॉगआउट",
-  "comment_placeholder": "टिप्पणी लिखें..."
+  "post_placeholder": "अपने विचार लिखें...",
+  "choose_file": "फ़ाइल चुनें",
+  "post_button": "पोस्ट करें",
+  "uploading": "अपलोड हो रहा है...",
+  "no_posts": "अभी तक कोई पोस्ट नहीं। पहले पोस्ट करें!",
+  "like": "लाइक",
+  "comment": "कमेंट",
+  "share": "शेयर",
+  "comment_placeholder": "टिप्पणी लिखें...",
+  "send": "भेजें",
+  "loading": "लोड हो रहा है..."
 }
