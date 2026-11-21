@@ -3,9 +3,13 @@ import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import UploadForm from '../components/UploadForm'
 import PostCard from '../components/PostCard'
+import { useTranslation } from 'react-i18next' // ইমপৰ্ট কৰক
 
-export default function Feed() {
+// onOpenProfile প্ৰপটো গ্ৰহণ কৰক
+export default function Feed({ onOpenProfile }) { 
   const { user, signOut } = useAuth()
+  const { t } = useTranslation() // t ব্যৱহাৰ কৰক
+  
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -24,17 +28,23 @@ export default function Feed() {
     <div style={{ maxWidth: 600, margin: '0 auto', padding: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <h1>Sahoyogita</h1>
-        <button onClick={signOut} style={{ padding: '8px 16px', cursor: 'pointer' }}>
-          লগআউট
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {/* প্ৰফাইল বুটাম */}
+          <button onClick={onOpenProfile} style={{ padding: '8px 16px', cursor: 'pointer', background: '#0066cc', color: 'white', border: 'none', borderRadius: 4 }}>
+            {t('my_profile')}
+          </button>
+          <button onClick={signOut} style={{ padding: '8px 16px', cursor: 'pointer' }}>
+            {t('logout')}
+          </button>
+        </div>
       </div>
 
       <UploadForm onPosted={fetchPosts} />
 
       {loading ? (
-        <p>লোড হৈ আছে...</p>
+        <p>{t('loading')}</p>
       ) : posts.length === 0 ? (
-        <p>এতিয়ালৈকে কোনো পোষ্ট নাই। প্ৰথমটো পোষ্ট আপুনিয়েই কৰক!</p>
+        <p>{t('no_posts')}</p>
       ) : (
         posts.map(post => <PostCard key={post.id} post={post} onUpdate={fetchPosts} currentUser={user} />)
       )}
