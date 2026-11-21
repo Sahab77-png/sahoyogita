@@ -40,6 +40,18 @@ export default function Login() {
           <option value="as">অসমীয়া</option>
           <option value="en">English</option>
           <option value="hi">हिन्दी</option>
+          <select
+  onChange={(e) => i18n.changeLanguage(e.target.value)}
+  value={i18n.language}
+  style={{ padding: '5px 10px', borderRadius: 4, border: '1px solid #ccc' }}
+>
+  <option value="en">English</option>
+  <option value="as">অসমীয়া</option>
+  <option value="hi">हिन्दी</option>
+  <option value="bn">বাংলা</option>
+  <option value="ar">العربية (Arabic)</option>
+  <option value="ur">اردو (Urdu)</option>
+</select>
           {/* আপুনি ইয়াত আৰু ভাষা যোগ কৰিব পাৰে */}
         </select>
       </div>

@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
+import { useTranslation } from 'react-i18next' // ইমপৰ্ট কৰক
 
 export default function UploadForm({ onPosted }) {
   const { user } = useAuth()
+  const { t } = useTranslation() // t ব্যৱহাৰ কৰক
+  
   const [content, setContent] = useState('')
   const [file, setFile] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -24,7 +27,7 @@ export default function UploadForm({ onPosted }) {
         .upload(filePath, file)
 
       if (uploadError) {
-        alert('আপলোড বিফল: ' + uploadError.message)
+        alert(t('upload_failed') + uploadError.message) // অনুবাদ কৰা হ'ল
         setUploading(false)
         return
       }
@@ -45,7 +48,7 @@ export default function UploadForm({ onPosted }) {
       media_type: mediaType,
     })
 
-    if (error) alert('পোষ্ট বিফল: ' + error.message)
+    if (error) alert(t('post_failed') + error.message) // অনুবাদ কৰা হ'ল
     else {
       setContent('')
       setFile(null)
@@ -58,7 +61,7 @@ export default function UploadForm({ onPosted }) {
   return (
     <form onSubmit={handleSubmit} style={{ background: '#f5f5f5', padding: 16, borderRadius: 8, marginBottom: 20 }}>
       <textarea
-        placeholder="আপোনাৰ মনৰ কথা লিখক..."
+        placeholder={t('post_placeholder')}
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={3}
@@ -71,7 +74,7 @@ export default function UploadForm({ onPosted }) {
           disabled={uploading}
           style={{ padding: '10px 20px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', marginLeft: 'auto' }}
         >
-          {uploading ? 'আপলোড হৈ আছে...' : 'পোষ্ট কৰক'}
+          {uploading ? t('uploading') : t('post_button')}
         </button>
       </div>
     </form>
