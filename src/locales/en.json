@@ -19,6 +19,7 @@
   "share": "Share",
   "comment_placeholder": "Write a comment...",
   "send": "Send",
+<<<<<<< HEAD
   "loading": "Loading...",
   "edit": "Edit",
   "delete": "Delete",
@@ -35,3 +36,7 @@
 "upload_failed": "Image upload failed: ",
 "update_failed": "Update failed: "
 }
+=======
+  "loading": "Loading..."
+}
+>>>>>>> b8584bf1421d3812092ea746c6e7e5ae2bb48585
