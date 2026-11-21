@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { useTranslation } from 'react-i18next' // ইমপৰ্ট কৰক
 
 export default function PostCard({ post, onUpdate, currentUser }) {
+  const { t } = useTranslation() // t ব্যৱহাৰ কৰক
+  
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
   const [likesCount, setLikesCount] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [showComments, setShowComments] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editContent, setEditContent] = useState(post.content || '')
 
   const loadInteractions = async () => {
     const { data: commentsData } = await supabase
@@ -54,32 +59,84 @@ export default function PostCard({ post, onUpdate, currentUser }) {
       await navigator.share({ title: 'Sahoyogita', text: post.content || '', url })
     } else {
       await navigator.clipboard.writeText(url)
-      alert("লিংক কপি হৈ গ'ল!")
+      alert(t('copy_success')) // অনুবাদ যোগ কৰা হ'ল
     }
+  }
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(t('confirm_delete')) // অনুবাদ যোগ কৰা হ'ল
+    if (confirmDelete) {
+      await supabase.from('posts').delete().eq('id', post.id)
+      onUpdate()
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editContent.trim()) return
+    await supabase.from('posts').update({ content: editContent }).eq('id', post.id)
+    setIsEditing(false)
+    onUpdate()
   }
 
   return (
     <div style={{ background: 'white', border: '1px solid #ddd', borderRadius: 8, padding: 16, marginBottom: 16 }}>
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#4CAF50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-          {(post.profiles?.username || 'U')[0].toUpperCase()}
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
+          
+          {/* প্ৰফাইল ছবি */}
+          {post.profiles?.avatar_url ? (
+            <img src={post.profiles.avatar_url} alt="Avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#4CAF50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+              {(post.profiles?.username || 'U')[0].toUpperCase()}
+            </div>
+          )}
+
+          <div>
+            <strong>{post.profiles?.full_name || post.profiles?.username || 'User'}</strong>
+            <div style={{ fontSize: 12, color: '#666' }}>@{post.profiles?.username}</div>
+          </div>
         </div>
-        <div>
-          <strong>{post.profiles?.full_name || post.profiles?.username || 'User'}</strong>
-          <div style={{ fontSize: 12, color: '#666' }}>@{post.profiles?.username}</div>
-        </div>
+
+        {/* এডিট/ডিলিট বুটাম */}
+        {currentUser?.id === post.user_id && (
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={() => setIsEditing(!isEditing)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#0066cc' }}>
+              ✏️ {t('edit')}
+            </button>
+            <button onClick={handleDelete} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'red' }}>
+              🗑️ {t('delete')}
+            </button>
+          </div>
+        )}
       </div>
 
-      {post.content && <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>}
+      {isEditing ? (
+        <div style={{ marginTop: 10 }}>
+          <textarea 
+            value={editContent} 
+            onChange={(e) => setEditContent(e.target.value)}
+            style={{ width: '100%', padding: 8, fontSize: 16, borderRadius: 4, border: '1px solid #ccc' }}
+            rows={3}
+          />
+          <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+            <button onClick={handleSaveEdit} style={{ padding: '5px 15px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: 4 }}>{t('save')}</button>
+            <button onClick={() => setIsEditing(false)} style={{ padding: '5px 15px', background: '#ccc', color: 'black', border: 'none', borderRadius: 4 }}>{t('cancel')}</button>
+          </div>
+        </div>
+      ) : (
+        post.content && <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
+      )}
 
       {post.media_url && post.media_type === 'video' && (
-        <video src={post.media_url} controls style={{ width: '100%', borderRadius: 8 }} />
+        <video src={post.media_url} controls style={{ width: '100%', borderRadius: 8, marginTop: 10 }} />
       )}
       {post.media_url && post.media_type === 'audio' && (
-        <audio src={post.media_url} controls style={{ width: '100%', marginTop: 8 }} />
+        <audio src={post.media_url} controls style={{ width: '100%', marginTop: 10 }} />
       )}
       {post.media_url && post.media_type === 'image' && (
-        <img src={post.media_url} alt="" style={{ width: '100%', borderRadius: 8 }} />
+        <img src={post.media_url} alt="" style={{ width: '100%', borderRadius: 8, marginTop: 10 }} />
       )}
 
       <div style={{ display: 'flex', gap: 20, marginTop: 12, paddingTop: 12, borderTop: '1px solid #eee' }}>
@@ -90,7 +147,7 @@ export default function PostCard({ post, onUpdate, currentUser }) {
           💬 {comments.length}
         </button>
         <button onClick={sharePost} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>
-          🔗 শ্বেয়াৰ
+          🔗 {t('share')}
         </button>
       </div>
 
@@ -104,12 +161,12 @@ export default function PostCard({ post, onUpdate, currentUser }) {
           <form onSubmit={addComment} style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <input
               type="text"
-              placeholder="কমেন্ট লিখক..."
+              placeholder={t('comment_placeholder')}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               style={{ flex: 1, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
             />
-            <button type="submit" style={{ padding: '8px 16px', cursor: 'pointer' }}>পঠিয়াওক</button>
+            <button type="submit" style={{ padding: '8px 16px', cursor: 'pointer' }}>{t('send')}</button>
           </form>
         </div>
       )}
