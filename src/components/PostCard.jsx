@@ -1,9 +1,10 @@
+
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useTranslation } from 'react-i18next' // ইমপৰ্ট কৰক
 
 export default function PostCard({ post, onUpdate, currentUser }) {
-  const { t } = useTranslation() // t ব্যৱহাৰ কৰক
+  const { t, i18n } = useTranslation() // i18n যোগ কৰক (তাৰিখৰ ভাষাৰ বাবে)
   
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
@@ -12,6 +13,24 @@ export default function PostCard({ post, onUpdate, currentUser }) {
   const [showComments, setShowComments] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(post.content || '')
+  
+  // নতুন: views ষ্টেট
+  const [views, setViews] = useState(post.views || 0)
+
+  // নতুন: পোষ্ট চালেই ভিউ বঢ়োৱাৰ লজিক (localStorage ৰ জৰিয়তে বাৰে বাৰে বাঢ়ি নাযায়)
+  useEffect(() => {
+    const viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '[]')
+    
+    if (!viewedPosts.includes(post.id)) {
+      supabase.rpc('increment_post_view', { post_id: post.id }).then(({ error }) => {
+        if (!error) {
+          setViews(prev => prev + 1)
+          viewedPosts.push(post.id)
+          localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts))
+        }
+      })
+    }
+  }, [post.id])
 
   const loadInteractions = async () => {
     const { data: commentsData } = await supabase
@@ -59,12 +78,12 @@ export default function PostCard({ post, onUpdate, currentUser }) {
       await navigator.share({ title: 'Sahoyogita', text: post.content || '', url })
     } else {
       await navigator.clipboard.writeText(url)
-      alert(t('copy_success')) // অনুবাদ যোগ কৰা হ'ল
+      alert(t('copy_success'))
     }
   }
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(t('confirm_delete')) // অনুবাদ যোগ কৰা হ'ল
+    const confirmDelete = window.confirm(t('confirm_delete'))
     if (confirmDelete) {
       await supabase.from('posts').delete().eq('id', post.id)
       onUpdate()
@@ -82,9 +101,8 @@ export default function PostCard({ post, onUpdate, currentUser }) {
     <div style={{ background: 'white', border: '1px solid #ddd', borderRadius: 8, padding: 16, marginBottom: 16 }}>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        {/* ইউজাৰৰ নাম আৰু আভাটাৰ */}
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
-          
-          {/* প্ৰফাইল ছবি */}
           {post.profiles?.avatar_url ? (
             <img src={post.profiles.avatar_url} alt="Avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
           ) : (
@@ -92,10 +110,16 @@ export default function PostCard({ post, onUpdate, currentUser }) {
               {(post.profiles?.username || 'U')[0].toUpperCase()}
             </div>
           )}
-
           <div>
             <strong>{post.profiles?.full_name || post.profiles?.username || 'User'}</strong>
-            <div style={{ fontSize: 12, color: '#666' }}>@{post.profiles?.username}</div>
+            <div style={{ fontSize: 12, color: '#666' }}>
+              @{post.profiles?.username} • {' '}
+              {/* তাৰিখ আৰু সময় */}
+              {new Intl.DateTimeFormat(i18n.language, { 
+                dateStyle: 'medium', 
+                timeStyle: 'short' 
+              }).format(new Date(post.created_at))}
+            </div>
           </div>
         </div>
 
@@ -112,6 +136,7 @@ export default function PostCard({ post, onUpdate, currentUser }) {
         )}
       </div>
 
+      {/* এডিট ম'ড আৰু নৰ্মেল ম'ড */}
       {isEditing ? (
         <div style={{ marginTop: 10 }}>
           <textarea 
@@ -149,6 +174,11 @@ export default function PostCard({ post, onUpdate, currentUser }) {
         <button onClick={sharePost} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>
           🔗 {t('share')}
         </button>
+        
+        {/* নতুন: ভিউ কাউন্টাৰ */}
+        <span style={{ fontSize: 15, color: '#666', display: 'flex', alignItems: 'center' }}>
+          👁️ {views} {t('views')}
+        </span>
       </div>
 
       {showComments && (
