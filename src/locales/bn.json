@@ -35,5 +35,18 @@
   "upload_failed": "ছবি আপলোড ব্যর্থ হয়েছে: ",
   "update_failed": "আপডেট ব্যর্থ হয়েছে: ",
   "post_failed": "Post failed: ",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "ইমেইল যাচাই করুন",
+"enter_otp": "আপনার ইমেইলে পাঠানো ৬-সংখ্যার OTP দিন।",
+"otp_code": "OTP কোড",
+"verify": "যাচাই করুন",
+"back": "ফিরে যান",
+"send_otp": "OTP পাঠান",
+"otp_sent": "আপনার ইমেইলে OTP পাঠানো হয়েছে!",
+"otp_verified": "OTP সঠিক! এখন নতুন পাসওয়ার্ড দিন।",
+"signup_success": "অ্যাকাউন্ট সফলভাবে যাচাই হয়েছে! এখন লগইন করুন।",
+"reset_password": "পাসওয়ার্ড রিসেট করুন",
+"new_password": "নতুন পাসওয়ার্ড",
+"save_password": "পাসওয়ার্ড সংরক্ষণ করুন",
+"enter_otp_title": "OTP দিন"
   }
