@@ -48,5 +48,6 @@
 "reset_password": "پاس ورڈ ری سیٹ کریں",
 "new_password": "نیا پاس ورڈ",
 "save_password": "پاس ورڈ محفوظ کریں",
-"enter_otp_title": "OTP درج کریں"
+"enter_otp_title": "OTP درج کریں",
+  "file_too_large": "فائل بہت بڑی ہے! براہ کرم 20 MB سے کم کی فائل منتخب کریں۔"
   }
