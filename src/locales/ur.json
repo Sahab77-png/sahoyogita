@@ -35,5 +35,18 @@
   "upload_failed": "تصویر اپ لوڈ ناکام: ",
   "update_failed": "اپ ڈیٹ ناکام: ",
   "post_failed": "Post failed: ",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "ای میل کی تصدیق کریں",
+"enter_otp": "اپنے ای میل پر بھیجا گیا 6 ہندسوں کا OTP درج کریں۔",
+"otp_code": "OTP کوڈ",
+"verify": "تصدیق کریں",
+"back": "واپس جائیں",
+"send_otp": "OTP بھیجیں",
+"otp_sent": "آپ کے ای میل پر OTP بھیج دیا گیا ہے!",
+"otp_verified": "OTP درست ہے! اب نیا پاس ورڈ دیں۔",
+"signup_success": "اکاؤنٹ کامیابی سے تصدیق ہو گیا! ابھی لاگ ان کریں۔",
+"reset_password": "پاس ورڈ ری سیٹ کریں",
+"new_password": "نیا پاس ورڈ",
+"save_password": "پاس ورڈ محفوظ کریں",
+"enter_otp_title": "OTP درج کریں"
   }
