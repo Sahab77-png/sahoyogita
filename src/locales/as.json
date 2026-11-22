@@ -48,6 +48,7 @@
 "reset_password": "পাছৱৰ্ড ৰিছেট",
 "new_password": "নতুন পাছৱৰ্ড",
 "save_password": "পাছৱৰ্ড ছেভ কৰক",
-"enter_otp_title": "OTP দিয়ক"
+"enter_otp_title": "OTP দিয়ক",
+  "file_too_large": "ফাইলটো অতি ডাঙৰ! অনুগ্ৰহ কৰি ২০ MB ৰ ভিতৰৰ ফাইল বাছনি কৰক।"
   }
 
