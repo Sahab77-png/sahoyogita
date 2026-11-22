@@ -1,15 +1,31 @@
+
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
-import { useTranslation } from 'react-i18next' // ইমপৰ্ট কৰক
+import { useTranslation } from 'react-i18next'
 
 export default function UploadForm({ onPosted }) {
   const { user } = useAuth()
-  const { t } = useTranslation() // t ব্যৱহাৰ কৰক
+  const { t } = useTranslation()
   
   const [content, setContent] = useState('')
   const [file, setFile] = useState(null)
   const [uploading, setUploading] = useState(false)
+
+  // নতুন: ফাইলৰ ছাইজ চেক কৰাৰ ফাংচন
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]
+    
+    if (selectedFile) {
+      // ফাইলৰ ছাইজ ২০ MB ৰ ভিতৰত হ'ব লাগিব
+      if (selectedFile.size > 20 * 1024 * 1024) {
+        alert(t('file_too_large'))
+        e.target.value = null // ইউজাৰে যাতে ডাঙৰ ফাইল বাছনি কৰিব নোৱাৰে
+        return
+      }
+      setFile(selectedFile)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -27,7 +43,7 @@ export default function UploadForm({ onPosted }) {
         .upload(filePath, file)
 
       if (uploadError) {
-        alert(t('upload_failed') + uploadError.message) // অনুবাদ কৰা হ'ল
+        alert(t('upload_failed') + uploadError.message)
         setUploading(false)
         return
       }
@@ -48,7 +64,7 @@ export default function UploadForm({ onPosted }) {
       media_type: mediaType,
     })
 
-    if (error) alert(t('post_failed') + error.message) // অনুবাদ কৰা হ'ল
+    if (error) alert(t('post_failed') + error.message)
     else {
       setContent('')
       setFile(null)
@@ -68,7 +84,14 @@ export default function UploadForm({ onPosted }) {
         style={{ width: '100%', padding: 10, fontSize: 16, borderRadius: 4, border: '1px solid #ccc', resize: 'vertical', boxSizing: 'border-box' }}
       />
       <div style={{ display: 'flex', gap: 10, marginTop: 10, alignItems: 'center' }}>
-        <input type="file" accept="image/*,video/*,audio/*" onChange={(e) => setFile(e.target.files[0])} />
+        
+        {/* ইয়াত onChange={handleFileChange} দিয়া হৈছে */}
+        <input 
+          type="file" 
+          accept="image/*,video/*,audio/*" 
+          onChange={handleFileChange} 
+        />
+        
         <button
           type="submit"
           disabled={uploading}
