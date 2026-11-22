@@ -35,6 +35,19 @@
   "upload_failed": "छवि अपलोड विफल: ",
   "update_failed": "अपडेट विफल: ",
   "post_failed": "Post failed: ",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "ईमेल सत्यापित करें",
+"enter_otp": "अपने ईमेल पर भेजा गया 6-अंकों का OTP दर्ज करें।",
+"otp_code": "OTP कोड",
+"verify": "सत्यापित करें",
+"back": "वापस जाएं",
+"send_otp": "OTP भेजें",
+"otp_sent": "आपके ईमेल पर OTP भेज दिया गया है!",
+"otp_verified": "OTP सत्यापित! कृपया नया पासवर्ड दर्ज करें।",
+"signup_success": "खाता सफलतापूर्वक सत्यापित हो गया! अब लॉगिन करें।",
+"reset_password": "पासवर्ड रीसेट करें",
+"new_password": "नया पासवर्ड",
+"save_password": "पासवर्ड सहेजें",
+"enter_otp_title": "OTP दर्ज करें"
   }
 
