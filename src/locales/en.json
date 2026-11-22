@@ -48,5 +48,6 @@
 "reset_password": "Reset Password",
 "new_password": "New Password",
 "save_password": "Save Password",
-"enter_otp_title": "Enter OTP"
+"enter_otp_title": "Enter OTP",
+  "file_too_large": "File is too large! Please select a file under 20 MB."
 }
