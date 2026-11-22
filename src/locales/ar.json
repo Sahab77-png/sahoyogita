@@ -48,5 +48,6 @@
 "reset_password": "إعادة تعيين كلمة المرور",
 "new_password": "كلمة المرور الجديدة",
 "save_password": "حفظ كلمة المرور",
-"enter_otp_title": "أدخل OTP"
+"enter_otp_title": "أدخل OTP",
+  "file_too_large": "الملف كبير جدًا! يرجى اختيار ملف أقل من 20 ميجابايت."
   }
