@@ -48,5 +48,6 @@
 "reset_password": "পাসওয়ার্ড রিসেট করুন",
 "new_password": "নতুন পাসওয়ার্ড",
 "save_password": "পাসওয়ার্ড সংরক্ষণ করুন",
-"enter_otp_title": "OTP দিন"
+"enter_otp_title": "OTP দিন",
+  "file_too_large": "ফাইলটি খুব বড়! অনুগ্রহ করে ২০ MB-এর কম ফাইল বাছাই করুন।"
   }
