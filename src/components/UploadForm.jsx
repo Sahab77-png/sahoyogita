@@ -10,19 +10,20 @@ export default function UploadForm({ onPosted }) {
   const [content, setContent] = useState('')
   const [file, setFile] = useState(null)
   const [uploading, setUploading] = useState(false)
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    if (selectedFile) {
-      if (selectedFile.size > 20 * 1024 * 1024) {
-        alert(t('file_too_large'))
-        e.target.value = null
-        return
-      }
-      setFile(selectedFile)
+    
+const handleFileChange = (e) => {
+  const selectedFile = e.target.files[0]
+  if (selectedFile) {
+    // ইয়াত ২০ ৰ পৰিৱৰ্তে ৫০ কৰি দিয়া হৈছে
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      alert(t('file_too_large')) 
+      e.target.value = null
+      return
     }
+    setFile(selectedFile)
   }
-
+}
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!content.trim() && !file) return
