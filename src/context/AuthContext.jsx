@@ -40,8 +40,31 @@ export function AuthProvider({ children }) {
     return await supabase.auth.signOut()
   }
 
+  // নতুন: ছাইন আপ OTP ভেৰিফাই
+  const verifySignupOtp = async (email, token) => {
+    return await supabase.auth.verifyOtp({ email, token, type: 'signup' })
+  }
+
+  // নতুন: পাছৱৰ্ড ৰিছেট OTP পঠিওৱা
+  const sendResetOtp = async (email) => {
+    return await supabase.auth.resetPasswordForEmail(email)
+  }
+
+  // নতুন: পাছৱৰ্ড ৰিছেট OTP ভেৰিফাই
+  const verifyResetOtp = async (email, token) => {
+    return await supabase.auth.verifyOtp({ email, token, type: 'recovery' })
+  }
+
+  // নতুন: নতুন পাছৱৰ্ড ছেভ কৰা
+  const updatePassword = async (newPassword) => {
+    return await supabase.auth.updateUser({ password: newPassword })
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, loading, signUp, signIn, signOut, 
+      verifySignupOtp, sendResetOtp, verifyResetOtp, updatePassword 
+    }}>
       {children}
     </AuthContext.Provider>
   )

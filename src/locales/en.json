@@ -35,5 +35,19 @@
   "upload_failed": "Image upload failed: ",
   "update_failed": "Update failed: ",
   "post_failed": "Post failed: ",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "Verify Email",
+"enter_otp": "Enter the 6-digit OTP sent to your email.",
+"otp_code": "OTP Code",
+"verify": "Verify",
+"back": "Go Back",
+"send_otp": "Send OTP",
+"otp_sent": "OTP has been sent to your email!",
+"otp_verified": "OTP verified! Please enter a new password.",
+"signup_success": "Account confirmed successfully! Please login.",
+"reset_password": "Reset Password",
+"new_password": "New Password",
+"save_password": "Save Password",
+"enter_otp_title": "Enter OTP",
+  "file_too_large": "File is too large! Please select a file under 20 MB."
 }

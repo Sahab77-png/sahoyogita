@@ -35,6 +35,21 @@
   "upload_failed": "ছবি আপলোড বিফল: ",
   "update_failed": "আপডেট বিফল: ",
   "post_failed": "Post failed: ",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "ইমেইল ভেৰিফাই কৰক",
+"enter_otp": "ইমেইলত পঠিওৱা ৬-ডিজিটৰ OTP দিয়ক।",
+"otp_code": "OTP ক'ড",
+"verify": "ভেৰিফাই কৰক",
+"back": "পিছলৈ যাওক",
+"send_otp": "OTP পঠিয়াওক",
+"otp_sent": "আপোনাৰ ইমেইললৈ OTP পঠিওৱা হৈছে!",
+"otp_verified": "OTP সঠিক! এতিয়া নতুন পাছৱৰ্ড দিয়ক।",
+"signup_success": "একাউণ্ট সফলভাৱে কনফাৰ্ম হৈ গ'ল! এতিয়া লগইন কৰক।",
+"reset_password": "পাছৱৰ্ড ৰিছেট",
+"new_password": "নতুন পাছৱৰ্ড",
+"save_password": "পাছৱৰ্ড ছেভ কৰক",
+"enter_otp_title": "OTP দিয়ক",
+  "file_too_large": "ফাইলটো অতি ডাঙৰ! অনুগ্ৰহ কৰি ২০ MB ৰ ভিতৰৰ ফাইল বাছনি কৰক।"
   }
+
 

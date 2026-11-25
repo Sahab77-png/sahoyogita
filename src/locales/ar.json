@@ -35,5 +35,19 @@
   "upload_failed": "فشل رفع الصورة: ",
   "update_failed": "فشل التحديث: ",
   "post_failed": "Post failed:",
-  "views": "Views"
+  "views": "Views",
+  "verify_email": "تأكيد البريد الإلكتروني",
+"enter_otp": "أدخل رمز OTP المكون من 6 أرقام المرسل إلى بريدك الإلكتروني.",
+"otp_code": "رمز OTP",
+"verify": "تأكيد",
+"back": "رجوع",
+"send_otp": "إرسال OTP",
+"otp_sent": "تم إرسال OTP إلى بريدك الإلكتروني!",
+"otp_verified": "تم تأكيد OTP! يرجى إدخال كلمة مرور جديدة.",
+"signup_success": "تم تأكيد الحساب بنجاح! يرجى تسجيل الدخول.",
+"reset_password": "إعادة تعيين كلمة المرور",
+"new_password": "كلمة المرور الجديدة",
+"save_password": "حفظ كلمة المرور",
+"enter_otp_title": "أدخل OTP",
+  "file_too_large": "الملف كبير جدًا! يرجى اختيار ملف أقل من 20 ميجابايت."
   }
