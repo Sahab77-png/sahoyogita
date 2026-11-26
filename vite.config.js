@@ -26,5 +26,5 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
-  base: '/sahoyogita/', // GitHub ৰিপ'জিটৰীৰ নাম
+  base: '/', // GitHub ৰিপ'জিটৰীৰ নাম
 })
