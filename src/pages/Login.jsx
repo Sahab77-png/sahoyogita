@@ -21,7 +21,7 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
-  // ১. লগইন আৰু ছাইন আপ (এই ফাংচনটো আগতে মচ খাই গৈছিল)
+  // ১. লগইন আৰু ছাইন আপ
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
@@ -47,11 +47,12 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
     const { error } = await verifySignupOtp(email, otp)
     if (error) {
       setError(error.message)
+      setLoading(false)
     } else {
       alert(t('signup_success'))
       setView('login'); setOtp(''); setPassword('')
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   // ৩. ৰিছেট OTP পঠিওৱা
@@ -61,78 +62,51 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
     const { error } = await sendResetOtp(email)
     if (error) {
       setError(error.message)
+      setLoading(false)
     } else {
       setMessage(t('otp_sent'))
       setView('forgot_otp')
+      setLoading(false)
     }
-    setLoading(false)
   }
 
-  // ৪. ৰিছেট OTP ভেৰিফাই (এই ফাংচনটো আপুনি দুবাৰ লিখিছিল)
+  // ৪. ৰিছেট OTP ভেৰিফাই
   const handleVerifyResetOtp = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
     const { error } = await verifyResetOtp(email, otp)
     if (error) {
       setError(error.message)
+      setLoading(false)
     } else {
-      setMessage(t('otp_verified'))
-      setView('forgot_reset'); setOtp('')
-      if (setIsRecovering) setIsRecovering(true) 
+      // OTP শুদ্ধ হ'লে sessionStorage ত ফ্লাগ ছেট কৰি পেজ ৰিলোড কৰক
+      sessionStorage.setItem('is_resetting_password', 'true');
+      window.location.reload();
     }
-    setLoading(false)
   }
 
-  // ৫. নতুন পাছৱৰ্ড ছেভ (এই ফাংচনটোও আপুনি দুবাৰ লিখিছিল)
+  // ৫. নতুন পাছৱৰ্ড ছেভ
   const handleUpdatePassword = async (e) => {
     e.preventDefault()
     setError(''); setLoading(true)
     const { error } = await updatePassword(newPassword)
     if (error) {
       setError(error.message)
+      setLoading(false)
     } else {
-      alert(t('password_updated')) // ভুল শুধৰোৱা হ'ল
-      setView('login'); setNewPassword(''); setPassword('')
-      if (setIsRecovering) setIsRecovering(false) 
+      alert(t('password_updated'))
+      
+      // পাছৱৰ্ড সফল হ'লে ফ্লাগ মচি পেলাওক আৰু ৰিলোড কৰক
+      sessionStorage.removeItem('is_resetting_password'); 
+      setNewPassword(''); setPassword('')
+      window.location.reload(); 
     }
-    setLoading(false)
   }
-  // ৪. ৰিছেট OTP ভেৰিফাই
-const handleVerifyResetOtp = async (e) => {
-  e.preventDefault()
-  setError(''); setMessage(''); setLoading(true)
-  const { error } = await verifyResetOtp(email, otp)
-  if (error) {
-    setError(error.message)
-    setLoading(false)
-  } else {
-    // OTP শুদ্ধ হ'লে sessionStorage ত ফ্লাগ ছেট কৰি পেজ ৰিলোড কৰক
-    sessionStorage.setItem('is_resetting_password', 'true');
-    window.location.reload();
-  }
-}
-
-// ৫. নতুন পাছৱৰ্ড ছেভ
-const handleUpdatePassword = async (e) => {
-  e.preventDefault()
-  setError(''); setLoading(true)
-  const { error } = await updatePassword(newPassword)
-  if (error) {
-    setError(error.message)
-    setLoading(false)
-  } else {
-    alert(t('password_updated'))
-    
-    // পাছৱৰ্ড সফল হ'লে ফ্লাগ মচি পেলাওক আৰু ৰিলোড কৰক
-    sessionStorage.removeItem('is_resetting_password'); 
-    setNewPassword(''); setPassword('')
-    window.location.reload(); 
-  }
-}
 
   return (
     <div style={{ maxWidth: 400, margin: '50px auto', padding: 20 }}>
       
+      {/* ভাষা সলনি কৰাৰ ড্ৰপডাউন */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <select
           onChange={(e) => i18n.changeLanguage(e.target.value)}
