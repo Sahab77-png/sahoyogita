@@ -21,11 +21,9 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
-  // ১. লগইন আৰু ছাইন আপ
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
-
     if (view === 'login') {
       const result = await signIn(email, password)
       if (result.error) setError(result.error.message)
@@ -40,37 +38,32 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
     setLoading(false)
   }
 
-  // ২. ছাইন আপ OTP ভেৰিফাই
   const handleVerifySignupOtp = async (e) => {
     e.preventDefault()
     setError(''); setLoading(true)
     const { error } = await verifySignupOtp(email, otp)
     if (error) {
       setError(error.message)
-      setLoading(false)
     } else {
       alert(t('signup_success'))
       setView('login'); setOtp(''); setPassword('')
-      setLoading(false)
     }
+    setLoading(false)
   }
 
-  // ৩. ৰিছেট OTP পঠিওৱা
   const handleSendResetOtp = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
     const { error } = await sendResetOtp(email)
     if (error) {
       setError(error.message)
-      setLoading(false)
     } else {
       setMessage(t('otp_sent'))
       setView('forgot_otp')
-      setLoading(false)
     }
+    setLoading(false)
   }
 
-  // ৪. ৰিছেট OTP ভেৰিফাই
   const handleVerifyResetOtp = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
@@ -79,13 +72,13 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
       setError(error.message)
       setLoading(false)
     } else {
-      // OTP শুদ্ধ হ'লে sessionStorage ত ফ্লাগ ছেট কৰি পেজ ৰিলোড কৰক
-      sessionStorage.setItem('is_resetting_password', 'true');
-      window.location.reload();
+      // সফল হ'লে App.jsx ক কোৱা যে আমি ৰিছেট ম'ডত আছোঁ
+      if (setIsRecovering) setIsRecovering(true)
+      setView('forgot_reset')
+      setLoading(false)
     }
   }
 
-  // ৫. নতুন পাছৱৰ্ড ছেভ
   const handleUpdatePassword = async (e) => {
     e.preventDefault()
     setError(''); setLoading(true)
@@ -95,18 +88,17 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
       setLoading(false)
     } else {
       alert(t('password_updated'))
-      
-      // পাছৱৰ্ড সফল হ'লে ফ্লাগ মচি পেলাওক আৰু ৰিলোড কৰক
-      sessionStorage.removeItem('is_resetting_password'); 
       setNewPassword(''); setPassword('')
-      window.location.reload(); 
+      
+      // পাছৱৰ্ড ছেভ হোৱাৰ পিছত ৰিছেট ম'ড বন্ধ কৰক (তেতিয়া App.jsx এ Feed দেখুৱাব)
+      if (setIsRecovering) setIsRecovering(false)
+      setView('login')
+      setLoading(false)
     }
   }
 
   return (
     <div style={{ maxWidth: 400, margin: '50px auto', padding: 20 }}>
-      
-      {/* ভাষা সলনি কৰাৰ ড্ৰপডাউন */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <select
           onChange={(e) => i18n.changeLanguage(e.target.value)}
@@ -124,7 +116,6 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
 
       <h1 style={{ textAlign: 'center' }}>Sahoyogita</h1>
 
-      {/* ১. লগইন আৰু ছাইন আপ */}
       {(view === 'login' || view === 'signup') && (
         <>
           <h2 style={{ textAlign: 'center' }}>{view === 'signup' ? t('signup') : t('login')}</h2>
@@ -137,15 +128,12 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
             )}
             <input type="email" placeholder={t('email')} value={email} onChange={(e) => setEmail(e.target.value)} required style={{ padding: 10, fontSize: 16 }} />
             <input type="password" placeholder={t('password')} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} style={{ padding: 10, fontSize: 16 }} />
-            
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {message && <p style={{ color: 'green' }}>{message}</p>}
-            
             <button type="submit" disabled={loading} style={{ padding: 12, fontSize: 16, background: '#4CAF50', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
               {loading ? t('wait') : (view === 'signup' ? t('signup') : t('login'))}
             </button>
           </form>
-
           <div style={{ textAlign: 'center', marginTop: 20 }}>
             <button onClick={() => { setView(view === 'login' ? 'signup' : 'login'); setError(''); setMessage('') }} style={{ background: 'none', border: 'none', color: '#0066cc', cursor: 'pointer', textDecoration: 'underline' }}>
               {view === 'signup' ? t('loginNow') : t('createAccount')}
@@ -158,7 +146,6 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
         </>
       )}
 
-      {/* ২. ছাইন আপ OTP */}
       {view === 'signup_otp' && (
         <>
           <h2 style={{ textAlign: 'center' }}>{t('verify_email')}</h2>
@@ -172,7 +159,6 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
         </>
       )}
 
-      {/* ৩. পাছৱৰ্ড পাহৰিছে (Email) */}
       {view === 'forgot_email' && (
         <>
           <h2 style={{ textAlign: 'center' }}>{t('reset_password')}</h2>
@@ -186,7 +172,6 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
         </>
       )}
 
-      {/* ৪. পাছৱৰ্ড পাহৰিছে (OTP) */}
       {view === 'forgot_otp' && (
         <>
           <h2 style={{ textAlign: 'center' }}>{t('enter_otp_title')}</h2>
@@ -199,7 +184,6 @@ export default function Login({ setIsRecovering, initialView = 'login' }) {
         </>
       )}
 
-      {/* ৫. নতুন পাছৱৰ্ড */}
       {view === 'forgot_reset' && (
         <>
           <h2 style={{ textAlign: 'center' }}>{t('reset_password')}</h2>
