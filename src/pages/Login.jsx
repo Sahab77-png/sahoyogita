@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useTranslation } from 'react-i18next'
 
-export default function Login() {
+export default function Login({ setIsRecovering, initialView = 'login'}) {
   const { 
     signIn, signUp, verifySignupOtp, sendResetOtp, verifyResetOtp, updatePassword 
   } = useAuth()
   const { t, i18n } = useTranslation()
 
   // view: 'login', 'signup', 'signup_otp', 'forgot_email', 'forgot_otp', 'forgot_reset'
-  const [view, setView] = useState('login') 
+  const [view, setView] = useState(initialView) 
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,9 +23,33 @@ export default function Login() {
   const [message, setMessage] = useState('')
 
   // ১. লগইন আৰু ছাইন আপ
-  const handleSubmit = async (e) => {
+  const handleVerifyResetOtp = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
+    const { error } = await verifyResetOtp(email, otp)
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage(t('otp_verified'))
+      setView('forgot_reset'); setOtp('')
+      if (setIsRecovering) setIsRecovering(true)
+    }
+  setLoading(false)
+  }
+
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault()
+    setError(''); setLoading(true)
+    const { error } = await updatePassword(newPassword)
+    if (error) {
+      setError(error.message)
+    } else {
+      alert(t('password_update'))
+      setView('login'); setNewPassword(''); setPassword('')
+      if (setIsRecovering) setIsRecovering(false)
+    }
+  setLoading(false)
+  }
 
     if (view === 'login') {
       const result = await signIn(email, password)

@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/Login'
@@ -8,11 +7,17 @@ import Profile from './pages/Profile' // নতুনকৈ ইমপৰ্ট �
 function AppContent() {
   const { user, loading } = useAuth()
   const [showProfile, setShowProfile] = useState(false) // ষ্টেট
+  const [isRecovering, setIsRecovering] = useState(false)
 
   if (loading) return <div style={{ textAlign: 'center', padding: 50 }}>Loading...</div>
-  
-  if (!user) return <Login />
 
+  if (isRecovering) {
+    return <login setIsRecovering={setIsRecovering} initialView="forget_reset" />
+  }
+  
+  if (!user) {
+    return <Login setIsRecovering={setIsRecovering} initialView="login" />
+  }
   // যদি showProfile true হয়, তেন্তে প্ৰফাইল দেখুৱাব, নহ'লে ফীড
   return showProfile ? (
     <Profile onClose={() => setShowProfile(false)} />
