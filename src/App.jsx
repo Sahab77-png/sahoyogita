@@ -8,25 +8,21 @@ import Profile from './pages/Profile'
 function AppContent() {
   const { user, loading } = useAuth()
   const [showProfile, setShowProfile] = useState(false)
-  
-  // sessionStorage ৰ পৰা চেক কৰক যে ইউজাৰে পাছৱৰ্ড ৰিছেট কৰি আছে নেকি
-  const [isRecovering, setIsRecovering] = useState(
-    sessionStorage.getItem('is_resetting_password') === 'true'
-  )
+  const [isRecovering, setIsRecovering] = useState(false) // ৰিছেট ম'ডৰ বাবে ষ্টেট
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event) => {
-      // যদি Supabase য়ে নিজে নিজেই ৰিকভাৰী ইভেণ্ট দিয়ে
+    // যদি Supabase য়ে ৰিকভাৰী ইভেণ্ট দিয়ে, তেন্তে ষ্টেট ট্ৰু কৰক
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
-        sessionStorage.setItem('is_resetting_password', 'true');
-        setIsRecovering(true);
+        setIsRecovering(true)
       }
     })
+    return () => subscription.unsubscribe()
   }, [])
 
   if (loading) return <div style={{ textAlign: 'center', padding: 50 }}>Loading...</div>
 
-  // যদি ৰিছেট ম'ড অন থাকে, তেন্তে জোৰকৈ Login পেজত ৰাখক (Feed লৈ যাবলৈ নিদিব)
+  // যদি পাছৱৰ্ড ৰিছেট কৰি আছে, তেন্তে Login পেজতে ৰাখক (Feed লৈ যাবলৈ নিদিব)
   if (isRecovering) {
     return <Login setIsRecovering={setIsRecovering} initialView="forgot_reset" />
   }
