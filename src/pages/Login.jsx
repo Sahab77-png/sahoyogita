@@ -2,13 +2,12 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useTranslation } from 'react-i18next'
 
-export default function Login({ setIsRecovering, initialView = 'login'}) {
+export default function Login({ setIsRecovering, initialView = 'login' }) {
   const { 
     signIn, signUp, verifySignupOtp, sendResetOtp, verifyResetOtp, updatePassword 
   } = useAuth()
   const { t, i18n } = useTranslation()
 
-  // view: 'login', 'signup', 'signup_otp', 'forgot_email', 'forgot_otp', 'forgot_reset'
   const [view, setView] = useState(initialView) 
   
   const [email, setEmail] = useState('')
@@ -22,34 +21,10 @@ export default function Login({ setIsRecovering, initialView = 'login'}) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
-  // ১. লগইন আৰু ছাইন আপ
-  const handleVerifyResetOtp = async (e) => {
+  // ১. লগইন আৰু ছাইন আপ (এই ফাংচনটো আগতে মচ খাই গৈছিল)
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
-    const { error } = await verifyResetOtp(email, otp)
-    if (error) {
-      setError(error.message)
-    } else {
-      setMessage(t('otp_verified'))
-      setView('forgot_reset'); setOtp('')
-      if (setIsRecovering) setIsRecovering(true)
-    }
-  setLoading(false)
-  }
-
-  const handleUpdatePassword = async (e) => {
-    e.preventDefault()
-    setError(''); setLoading(true)
-    const { error } = await updatePassword(newPassword)
-    if (error) {
-      setError(error.message)
-    } else {
-      alert(t('password_update'))
-      setView('login'); setNewPassword(''); setPassword('')
-      if (setIsRecovering) setIsRecovering(false)
-    }
-  setLoading(false)
-  }
 
     if (view === 'login') {
       const result = await signIn(email, password)
@@ -70,8 +45,9 @@ export default function Login({ setIsRecovering, initialView = 'login'}) {
     e.preventDefault()
     setError(''); setLoading(true)
     const { error } = await verifySignupOtp(email, otp)
-    if (error) setError(error.message)
-    else {
+    if (error) {
+      setError(error.message)
+    } else {
       alert(t('signup_success'))
       setView('login'); setOtp(''); setPassword('')
     }
@@ -83,36 +59,41 @@ export default function Login({ setIsRecovering, initialView = 'login'}) {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
     const { error } = await sendResetOtp(email)
-    if (error) setError(error.message)
-    else {
+    if (error) {
+      setError(error.message)
+    } else {
       setMessage(t('otp_sent'))
       setView('forgot_otp')
     }
     setLoading(false)
   }
 
-  // ৪. ৰিছেট OTP ভেৰিফাই
+  // ৪. ৰিছেট OTP ভেৰিফাই (এই ফাংচনটো আপুনি দুবাৰ লিখিছিল)
   const handleVerifyResetOtp = async (e) => {
     e.preventDefault()
     setError(''); setMessage(''); setLoading(true)
     const { error } = await verifyResetOtp(email, otp)
-    if (error) setError(error.message)
-    else {
+    if (error) {
+      setError(error.message)
+    } else {
       setMessage(t('otp_verified'))
       setView('forgot_reset'); setOtp('')
+      if (setIsRecovering) setIsRecovering(true) 
     }
     setLoading(false)
   }
 
-  // ৫. নতুন পাছৱৰ্ড ছেভ
+  // ৫. নতুন পাছৱৰ্ড ছেভ (এই ফাংচনটোও আপুনি দুবাৰ লিখিছিল)
   const handleUpdatePassword = async (e) => {
     e.preventDefault()
     setError(''); setLoading(true)
     const { error } = await updatePassword(newPassword)
-    if (error) setError(error.message)
-    else {
-      alert(t('password_updated'))
+    if (error) {
+      setError(error.message)
+    } else {
+      alert(t('password_updated')) // ভুল শুধৰোৱা হ'ল
       setView('login'); setNewPassword(''); setPassword('')
+      if (setIsRecovering) setIsRecovering(false) 
     }
     setLoading(false)
   }
@@ -120,7 +101,6 @@ export default function Login({ setIsRecovering, initialView = 'login'}) {
   return (
     <div style={{ maxWidth: 400, margin: '50px auto', padding: 20 }}>
       
-      {/* ভাষা সলনি কৰাৰ ড্ৰপডাউন (ভুল ঠিক কৰা হৈছে) */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <select
           onChange={(e) => i18n.changeLanguage(e.target.value)}
